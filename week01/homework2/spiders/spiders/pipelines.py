@@ -13,7 +13,6 @@ class SpidersPipeline:
         movie_name = item['movie_name']
         genre = item['genre']
         movie_date = item['movie_date']
-        print('==================================================')
         # output = f'|{movie_name}|\t|{genre}|\t|{movie_date}|\n\n'
         movie_infor.append(f'电影名称:{movie_name}\n电影类型:{genre}\n上映时间:{movie_date}\n')
         # with open('./movie2.csv','a+',encoding='utf-8') as article:
