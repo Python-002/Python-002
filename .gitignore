@@ -1,5 +1,8 @@
 # venv
 venv_*
 
+# cache
+**/*/__pycache__
+
 # vsc
 .vscode
