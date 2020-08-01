@@ -1,0 +1,21 @@
+version: '3.3'
+
+services:
+  scrapy_db:
+    container_name: mysql
+    image: mysql:8.0
+    volumes:
+      - scrapy_mysql:/var/lib/mysql:rw
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: maoyan
+      MYSQL_USER: scrapy
+      MYSQL_PASSWORD: scrapy
+    ports:
+      - 127.0.0.1:3306:3306
+    hostname: mysql
+
+volumes:
+  scrapy_mysql:
