@@ -6,7 +6,12 @@
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
-
+from scrapy.downloadermiddlewares.httpproxy import  HttpProxyMiddleware
+from scrapy.exceptions import NotConfigured
+from collections import defaultdict
+from urllib.parse import urlparse
+import random
+# from itemadapter import is_item, ItemAdapter
 
 class MaoyanSpiderMiddleware:
     # Not all methods need to be defined. If a method is not defined,
@@ -56,7 +61,7 @@ class MaoyanSpiderMiddleware:
         spider.logger.info('Spider opened: %s' % spider.name)
 
 
-class MaoyanDownloaderMiddleware:
+class DoubanmovieDownloaderMiddleware:
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the downloader middleware does not modify the
     # passed objects.
@@ -101,3 +106,21 @@ class MaoyanDownloaderMiddleware:
 
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)
+
+class RandomHttpProxyMiddleware(HttpProxyMiddleware):
+    def __init__(self, proxy_list=None, auth_encodeing='utf-8'):
+        self.proxies = defaultdict(list)
+        for proxy in proxy_list:
+            p = urlparse(proxy)
+            self.proxies[p.scheme].append(proxy)
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        proxy_list = crawler.settings.get('HTTP_PROXY_LIST')
+        if not proxy_list:
+            raise NotConfigured
+        return cls(proxy_list=proxy_list)
+
+    def _set_proxy(self, request, schema):
+        proxy = random.choice(self.proxies[schema])
+        request.meta['proxy'] = proxy

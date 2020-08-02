@@ -35,7 +35,7 @@ USER_AGENT = random.choice(USER_AGENT_LIST)
 ROBOTSTXT_OBEY = True
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-#CONCURRENT_REQUESTS = 32
+CONCURRENT_REQUESTS = 32
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
@@ -66,9 +66,9 @@ DOWNLOAD_DELAY = 1
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    'doubanmovie.middlewares.DoubanmovieDownloaderMiddleware': 543,
-#}
+DOWNLOADER_MIDDLEWARES = {
+   'doubanmovie.middlewares.DoubanmovieDownloaderMiddleware': 543,
+}
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
@@ -80,6 +80,20 @@ DOWNLOAD_DELAY = 1
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    'doubanmovie.pipelines.DoubanmoviePipeline': 300,
+}
+
+HTTP_PROXY_LIST = [
+   'http://101.4.136.34:81',
+   'http://110.243.13.15:9999',
+   'http://111.13.100.91:80',
+]
+
+MYSQL_CONFIG = {
+   'host': 'localhost',
+   'port': 3306,
+   'user': 'root',
+   'password': '',
+   'db': 'maoyan'
 }
 # ITEM_PIPELINES = {
 #     'doubanmovie.pipelines.MaoyanPipeline': 300,
