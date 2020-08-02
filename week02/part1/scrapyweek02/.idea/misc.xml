@@ -4,4 +4,5 @@
     <packageJsonPaths />
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.7" project-jdk-type="Python SDK" />
 </project>
