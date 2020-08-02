@@ -116,8 +116,10 @@ class RandomHttpProxyMiddleware(HttpProxyMiddleware):
         self.proxies = defaultdict(list)
         for proxy in proxy_list:
             parse = urlparse(proxy)
-            self.proxies[parse.scheme].append(proxy)
-            print("LOGGING proxy "+ proxy)            
+            # 这里稍微改了一下，因为maoyan那个地址是https的，而找到的代理网站是http的，按着原来这堆程序的逻辑，它不走http代理
+            self.proxies["https"].append(proxy)
+            # 我觉得，我后面要不看看怎么用scrapy里面的日志框架？无意中发现了可以self.logger输出log
+            print("LOGGING proxy in init"+ proxy)            
 
     @classmethod
     def from_crawler(cls, crawler):
@@ -132,4 +134,4 @@ class RandomHttpProxyMiddleware(HttpProxyMiddleware):
     def _set_proxy(self, request, scheme):
         proxy = random.choice(self.proxies[scheme])
         request.meta['proxy'] = proxy
-        print("LOGGING proxy "+ proxy)
+        print("LOGGING proxy in set : "+ proxy)

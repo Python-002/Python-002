@@ -32,11 +32,12 @@ class LspidersPipeline:
 
 import pymysql
 
+# 仅作示意，按说应该写读环境变量的，之前提交一次作业时候有个泄露，帐号/密码已重置
 dbInfo = {
-    'host' : 'rm-hp3p14nd9bp1rmbj1to.mysql.huhehaote.rds.aliyuncs.com',
+    'host' : 'zzz.rds.aliyuncs.com',
     'port' : 3306,
-    'user' : 'adm',
-    'password' : 'gUxXaNyxKRZBFQ93',
+    'user' : 'xxx',
+    'password' : 'yyy',
     'db' : 'pythontrainhomework'
 }
 
@@ -80,6 +81,7 @@ class ConnDB(object):
         except Exception as e:
             print(e)
             conn.rollback()
+        # 这里是不是应该加上finally，异常部份学习笔记部分总结一下吧，看群里说的，总觉得作业这个方面搞的有点问题，异常确实不容易被充分理解...最熟悉的陌生人之一
         conn.close()
 
 if __name__ == "__main__":
