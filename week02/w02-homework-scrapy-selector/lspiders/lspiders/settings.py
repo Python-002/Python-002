@@ -16,7 +16,10 @@ NEWSPIDER_MODULE = 'lspiders.spiders'
 LOG_LEVEL='INFO'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-USER_AGENT = 'lspiders (+https://maoyan.com)'
+# USER_AGENT = 'lspiders (+https://maoyan.com)'
+from fake_useragent import UserAgent
+ua = UserAgent(verify_ssl=False)
+USER_AGENT = '{ua.random}'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
@@ -52,10 +55,18 @@ ROBOTSTXT_OBEY = True
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    'lspiders.middlewares.LspidersDownloaderMiddleware': 543,
-#}
+DOWNLOADER_MIDDLEWARES = {
+   'lspiders.middlewares.LspidersDownloaderMiddleware': 543,
+   'lspiders.middlewares.RandomHttpProxyMiddleware': 400,
+}
 
+# 上面的一行和底下的两行属于照抄自课程代码，底下这个从https://github.com/clarketm/proxy-list/blob/master/proxy-list-raw.txt，copy了几个，可能作业本意不是这个意思吧
+
+HTTP_PROXY_LIST = [
+     'http://61.91.61.110:80',
+     'http://196.27.119.131:80',
+     'http://85.175.99.136:8080',
+]
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
 #EXTENSIONS = {

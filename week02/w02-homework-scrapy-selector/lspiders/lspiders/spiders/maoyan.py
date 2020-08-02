@@ -5,7 +5,7 @@ from lspiders.items import LspidersItem
 
 class MaoyanSpider(scrapy.Spider):
     name = 'maoyan'
-    allowed_domains = ['maoyan.com']
+    allowed_domains = ['maoyan.com','httpbin.org']
     start_urls = ['https://maoyan.com/films?showType=3']
 
     def start_requests(self):
@@ -14,19 +14,16 @@ class MaoyanSpider(scrapy.Spider):
             url = f'https://maoyan.com/films?showType=3&offset={i*30}'
             yield scrapy.Request(url=url, callback=self.parse)
 
-    # 必须得承认这个解法，基本还是bs那道题思路改过来的，仅仅是换成了scrapy自己的Selector
+    # 还没来得及改批改部分，仅增加了一些打印
     def parse(self, response):
-        print(response.url)
-
+        print(f"PARSE: {response.url},{response.request.meta}")
+        # 仅为瞜一眼到底用没用代理啊，一开始以为是httpbin.org慢，最后才发现应该是maoyan在start_requests里面就没用代理...
+        # 本来想象的是配置错误的代理地址，然后捕获相关异常，把异常的作业部分完成，不过就是试图调这个case时候，发现，捅猫眼确实没用代理啊
+        yield scrapy.Request(url='http://httpbin.org/ip', callback=self.checkIp)
         divs_with_hover = Selector(response=response).xpath('//div[@class="movie-item-hover"]')
         divs_with_hover = divs_with_hover[:10]
         print(len(divs_with_hover))
         for div in divs_with_hover:
-
-            # 可以这么思考这个问题，当一页能解决问题的时候，可能不值得再去请求另一页
-            # 但是如果预先把请求到另一页的代码组织起来，当需要爬更多数据的时候，相对会容易点
-            # 所以目前，按MVP的角度还好，但是有可能给后面课程作业挖坑了
-            # 其实主要还是时间不够，得带娃出去玩儿啊
 
             print(div.xpath("./a/@href").get())
 
@@ -45,3 +42,9 @@ class MaoyanSpider(scrapy.Spider):
                 elif '上映时间' in text_content:
                     item['release_time'] = "".join(item_div.xpath('./text()').getall()).strip()
             yield item
+        
+    def checkIp(self,response):
+        print(f"PARSE: {response.url},{response.request.meta}")
+        # 好像应该证明是真用了
+        print(f'IP is {response.text}')
+
