@@ -8,12 +8,12 @@
 import scrapy
 
 
-class   MaoyanmovieItem(scrapy.Item):
+class   MaoyanItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
 
     # 注释原有的pass
     # pass
-    moive_name = scrapy.Field()
-    moive_type = scrapy.Field()
-    online_time = scrapy.Field()
+    movies_name = scrapy.Field()
+    movies_type = scrapy.Field()
+    movies_time = scrapy.Field()
