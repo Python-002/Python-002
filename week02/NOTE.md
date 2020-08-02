@@ -30,3 +30,5 @@
 
 + 好像哪里听说过有个Django的兼容和速度会更好一点
 + 课程里面提到Python的方法签名？是类型提示 typo hint？不是类型定义
+
+... to be continue ...
