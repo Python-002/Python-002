@@ -41,7 +41,7 @@ def myPrint(*args, **kwargs):
   if VERBOSE:
     print("[MYDEBUG] ",*args,file=sys.stderr,**kwargs)
   else:
-    pass
+    pass # 这个似乎是看conventions里让这么写的
 
 # 这个忘了炒的argparse还是getOpt了
 def main():
