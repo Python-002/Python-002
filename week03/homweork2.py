@@ -202,7 +202,7 @@ if __name__ == '__main__':
 
     print(info_list)
 
-    存入数据库
+    # 存入数据库
     try:
         sqls = 'insert into workinfo_tbl(current_city, companyname, workname, salary) values'
         for i in range(len(info_list)):
