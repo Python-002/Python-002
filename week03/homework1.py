@@ -14,6 +14,7 @@ import sys
 import getopt
 import socket
 import struct
+import json
 
 
 
@@ -24,25 +25,33 @@ def ping_run(new_ip,filename):
         if backinfo != 0: #表示ping不同
             pass
         else:
-            iplist.append(ip)
+            iplist.append(new_ip)
             fi = open(filename,'a+',encoding='utf-8')
-            fi.write(json.dump({'ip': ip}))
+            print('+++++++++++++++++++')
+            print(new_ip)
+            fi.write(json.dumps({'ip': new_ip}))
             fi.close()
+            
     except Exception as e:
-        pass        
+        print(e)
+     
 
 def tcp_run(ip,port,filename):
     try:
         s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         result = s.connect((ip,port))
-        if result == 0:
-            print('%d open' % port)
-            fi = open(filename,'a+',encoding='utf-8')
-            fi.write(json.dump({'port': port}))
-            fi.close()
+        print('%d open' % port)
+        fi = open(filename,'a+',encoding='utf-8')
+        fi.write(json.dumps({'port': port}))
+        fi.close()
     except Exception as e:
-        # print(e)
+        print(e)
         pass
+    finally:
+        # if s:
+        s.close()
+        # if fi:
+        # fi.close()
 
 def ping_test(num_concurrent,start_ip,end_ip,filename):
     print("开始ping测试")
@@ -67,7 +76,7 @@ def tcp_test(num_concurrent,ip,filename):
     # setdefaulttimeout(1)
     threads = []
     pool = ThreadPool(num_concurrent)
-    for port in range(65000):
+    for port in range(10000):
         t = threading.Thread(target=tcp_run,args=(ip,port,filename))
         threads.append(t)
         t.start()
@@ -102,7 +111,7 @@ def main(argv):
             """
         )
         sys.exit(2)
-    print(opts)
+    # print(opts)
     for opt, arg in opts:
         if opt == "-n":
             str_num_concurrent = arg
@@ -130,7 +139,7 @@ def main(argv):
     elif "tcp" == cmd:
         print("进行tcp测试")
         ip = ipaddr
-        print(ip)
+        # print('tcp测试的ip' + ip)
         tcp_test(num_concurrent,ip,filename)
 
 
