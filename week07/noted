@@ -1,0 +1,120 @@
+1.  class Human2(object):
+    # 人为约定不可修改
+    _age = 0
+
+    # 私有属性,python会自动改名，以防被滥用和人为误修改
+    __fly = False
+
+    # 魔术方法，不会自动改名
+    # 如 __init__
+
+
+# 自动改名机制
+Human2.__dict__
+
+2.类的方法可以调用静态属性
+
+3.我们可以把@classmethod理解成python的一种构造函数，因为python自带的有且只有一种构造函数__new__，不能满足我们的需求。
+    classmethod的两大使用场景：
+        （1）我们把它定义到父类当中，当你使用子类的时候，那子类根据自己的变量名称发生变化时，可以引用到父类的classmethod
+        （2）当函数需要调用我们的类，并且返回我们的类。这种情况一般是我们需要提前对数据进行预处理。
+
+4.staticmetho:主要是让我们定义的函数和我们的类产生一定的关系。staticmethod修饰的函数不带参数（self,cls），不能引用类的属性和实例，函数的目的是用来做一些功能的转化，比如类型的转换，增加某些特定判断
+
+5.__getattribute__:无论你的属性存在还是不存在，实例在调用的时候， 都可以去拦截:
+  __getattr__:属性不在__dict__这样的一个方法之内的话，__getattr__才会拦截
+  注意：（1）__getattribute__和__getattr__同时存在，执行顺序是 __getattribute__ > __getattr__ > __dict__
+        (2)无论属性存在还是不存在，我们都会调用python自带__getattribute__的方法，会对自己实例性能损耗
+                    （3）__getattr__使用的时候，__dict__里面依然没有属性，使用__hasattr__判断的时候，即使能返回True,我们通过dir方式，依然看不到属性，也就是说，我们虽然改变了它的行为，但是很多内置的方法进行判断的时候会出现很多不一致的问题
+
+6.@property  将方法封装成属性，分装之后就只具备可读属性
+lass Human2(object):
+    def __init__(self):
+        self._gender = None
+    # 将方法封装成属性
+    @property
+    def gender2(self):
+        print(self._gender)
+
+    # 支持修改
+    @gender2.setter
+    def gender2(self,value):
+        self._gender = value
+
+    # 支持删除
+    @gender2.deleter
+    def gender2(self):
+        del self._gender
+
+
+h = Human2()
+h.gender = 'F'
+h.gender
+del h.gender
+# 另一种property写法
+# gender  = property(get_, set_, del_, 'other property')
+
+
+# 被装饰函数建议使用相同的gender2
+# 使用setter 并不能真正意义上实现无法写入，gender被改名为 _Article__gender
+
+
+# property本质并不是函数，而是特殊类（实现了数据描述符的类）
+# 如果一个对象同时定义了__get__()和__set__()方法，则称为数据描述符，
+# 如果仅定义了__get__()方法，则称为非数据描述符
+
+# property的优点：
+# 1 代码更简洁，可读性、可维护性更强。
+# 2 更好的管理属性的访问。
+# 3 控制属性访问权限，提高数据安全性。
+property的两大优点：（1）把函数和方法伪装成属性，操作起来更加优雅，方便；（2）把读和写相应分离，分权限控制读和写（比如设计密码验证时） 
+
+7.type元类创建了object和type.type类由type元类自身创建，object类是由元类type创建
+  注意：A创建了B，A不一定是B的父类，type创建了Object,但object的父类是空，没有继承任何类。type的父类为object类。即，继承和创建是两个不同的概念。
+
+8.python3里的继承是广度优先，
+例子：
+class BaseClass(object):
+    ....
+
+class LeftSubclass(BaseClass):
+    ....
+class RightSubclass(object):
+    ....
+class Subclass(LeftSubclass,RightSubclass):
+    ....
+
+a = Subclass()
+a.func()
+如果LeftSubclass没有func(),则在RightSubclass类里查
+
+菱形继承的规律：用Subclass.mro()查找
+ [<class '__main__.Subclass'>, <class '__main__.LeftSubclass'>, <class '__main__.RightSubclass'>, <class '__main__.BaseClass'>, <class 'object'>]
+
+9.开放封闭原则：
+
+10.def pop_value(self,dict_value):
+    for key in self.keys():
+        if self.__getitem__(key) == dict_value:
+            self.pop(key)
+            break
+
+# 元类要求,必须继承自type    
+class DelValue(type):
+    # 元类要求，必须实现new方法
+    def __new__(cls,name,bases,attrs):
+        attrs['pop_value'] = pop_value
+        return type.__new__(cls,name,bases,attrs)
+ 
+class DelDictValue(dict,metaclass=DelValue):
+    # python2的用法，在python3不支持
+    # __metaclass__ = DelValue
+    pass
+
+d = DelDictValue()
+d['a']='A'
+d['b']='B'
+d['c']='C'
+d.pop_value('C')
+for k,v in d.items():
+    print(k,v)
