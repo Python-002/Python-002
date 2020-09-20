@@ -1,0 +1,43 @@
+1.python导入文件技巧：
+    1.如文件在当前可执行目录，直接df = pd.read_csv('filename')
+    2.pwd = os.path.dirname(os.path.realpath(_file_)) # 获取文件
+      book = os.path.join(pwd,'filename')
+      df = pd.read_csv(book) # 采取拼接路径的方式，交互模式下无法使用
+
+2.# 通过字典创建带索引的Series
+s1 = pd.Series({'a':11, 'b':22, 'c':33})
+# 通过关键字创建带索引的Series
+s2 = pd.Series([11, 22, 33], index = ['a', 'b', 'c'])
+
+3.pandas 尽可能使用内置的函数
+agg(sum) # 快
+agg(lambda x: x.sum()) # 慢
+
+4.pprint模块提供了打印出任何python数据结构的类和方法
+
+5.SnowNLP可以进行训练：
+from snownlp import seg
+seg.train('data.txt') #加入要训练的数据
+seg.save('seg.marshal')
+# 修改snownlp/seg/__init__.py的 data_path 指向新的模型即可
+
+
+1. pandas 中文文档：
+https://www.pypandas.cn/
+sklearn-pandas
+2. 安装参考文档：
+https://pypi.org/project/sklearn-pandas/1.5.0/
+3. Numpy 学习文档：
+https://numpy.org/doc/
+4. matplotlib 学习文档：
+https://matplotlib.org/contents.html 
+5. DataFrame 学习文档：
+https://pandas.pydata.org/pandas-docs/stable/reference/frame.html
+6. Pandas 计算功能操作文档：
+https://pandas.pydata.org/docs/user_guide/computation.html#method-summary
+7. MySQL 数据库多表连接学习文档：
+https://dev.mysql.com/doc/refman/8.0/en/join.html
+8. plot 学习文档：
+https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.plot.html
+9. seaborn 学习文档：
+http://seaborn.pydata.org/tutorial.html

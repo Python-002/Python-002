@@ -1,0 +1,90 @@
+异常捕获过程：
+1.异常类把错误消息打包到一个对象（traceback）;
+2.该对象会自动查找到调用栈;
+3.直到运行系统找到明确的声明如何处理这些类异常的位置
+
+捕获所有的异常：
+try:
+    xxxx
+except Exception as e:
+    print(e)  # 输出异常信息
+
+自定义一个异常：
+class UserInputError(Exception):
+    def __init__(self, ErrorInfo):
+        super().__init__(self, ErrorInfo)
+        self.errorinfo = ErrorInfo
+    def __str__(self):
+        return self.errorinfo
+
+美化异常输出：可以import pretty_errors
+
+
+mysql:
+insert多条数据：INSERT INTO table_name  (field1, field2,...fieldN)  VALUES  (valueA1,valueA2,...valueAN),(valueB1,valueB2,...valueBN),(valueC1,valueC2,...valueCN)......;
+....
+
+python连接mysql的流程：开始-创建connection-获取cursor-CRUD(查询并获取数据)-关闭cursor-关闭connection-结束
+注意：在使用pymysql的时候，如果不需要对数据库进行操作了，则尽量要去和数据库断开连接，因为连接数据库的资源是有限的，而且尽量复用已有的连接
+
+
+# 获得cursor游标对象
+con1 = conn.cursor()
+# 获得一条查询结果
+result = con1.fetchone()
+# 获得所有查询结果
+print(con1.fetchall())
+con1.close()
+conn.close()
+
+# 执行批量插入
+# values = [(id,'testuser'+str(id)) for id in range(4, 21) ]
+# cursor.executemany('INSERT INTO '+ TABLE_NAME +' values(%s,%s)' ,values)
+
+
+反爬虫：1.根据你的行为来判断；2.根据你基本的请求
+反反爬虫一般来说，要注意爬虫的User_Agent,Host,Referer
+解决User_Agent：
+    from fake_useragent import UserAgent
+    ua = UserAgent(verify_ssl=False)
+    # 随机返回头部信息，推荐使用
+    print(f'随机浏览器: {ua.random}')
+解决cookies:
+
+
+一般来说，把POST模拟用户登录，都放在Scrapy的start_requests,得到cookies
+
+
+
+############# 大文件下载：
+# 如果文件比较大的话，那么下载下来的文件先放在内存中，内存还是比较有压力的。
+# 所以为了防止内存不够用的现象出现，我们要想办法把下载的文件分块写到磁盘中。
+import requests
+file_url = "http://python.xxx.yyy.pdf"
+r = requests.get(file_url, stream=True)
+with open("python.pdf", "wb") as pdf:
+    for chunk in r.iter_content(chunk_size=1024):
+        if chunk:
+            pdf.write(chunk)
+
+
+mysql:启动脚本：mysql.server start
+备忘录：db:week02
+
+Scrapy中从引擎到我我们的downloader要通过多个中间件， 通过中间件的请求顺序是从左到右，回来时是从右到左，可以设置优先级进行判断。
+
+
+如何编写一个下载中间件?一般需要重写下面四个主要方法:
+process_request(request, spider)
+Request 对象经过下载中间件时会被调用,优先级高的先调用
+process_response(request, response, spider)
+Response 对象经过下载中间件时会被调用,优先级高的后调用
+process_exception(request, exception, spider)
+当 process_exception() 和 process_request() 抛出异常时会被调用
+from_crawler(cls, crawler)
+使用 crawler 来创建中间器对象,并(必须)返回一个中间件对象
+
+在使用中间件的时候，有时候我们需要初始化一些信息，我们可以把它丢入到from_crawler()中
+
+四个方法在实现自己的下载中间件的时候，至少要实现某一个方法，才能在下载的过程中改变整个的流程
+
